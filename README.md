@@ -1,53 +1,33 @@
-# Assignment 2 - Castle Defense
+# Castle Defense
+Castle Defense is a program that simulates an imaginary Realm under attack. In it, we create Lands in the Realm and build Towers to defend a Castle.
 
-## Castle Defense
-Attention brave and noble engineers! Castle CSE is under attack by Enemies from Frankie the Fox's Lair. Queen Chicken, First of Her Name, Protector of the Realm, Lecturer in Charge for COMP1511, has commissioned you to build Her defenses and protect Her Castle.
+Enemies will spawn from their Lair and move towards the Castle through the Lands. As the Enemies move, they will be attacked by the towers, which both harms the Enemies and depletes the towers. If the Enemies reach the Castle, they will damage it.
 
-In this assignment, you will be implementing Castle Defense, a program that simulates an imaginary Realm that is under attack. You will be creating Lands in the Realm as well as building Towers to defend a Castle.
+This program manages Enemy movement as they pass through the Lands and will manage the use of Towers against the Enemies and any damage the Castle receives.
 
-The Enemies will spawn from their Lair and move towards the Castle through the Lands. As the Enemies move, they will be attacked by the towers, which both harms the Enemies and depletes the towers. If the Enemies reach the Castle, they will damage it.
+## The Realm
+The Realm is a struct that contains the Lands, the Lair, the Castle, Towers and Enemies. This struct has a pointer to the Castle, whence Queen Chicken and her Loyal subjects look down upon their kingdom. It also has a pointer to the lair, from which Frankie the Fox sends his feindish Enemies. Every location in the Realm lies on a linked list that starts at The Castle, and goes down to The Lair. Locations can have one of four types:
+* **Castle**: The Castle, which is always the first node in the linked list. If the Enemies can reach The Castle, they will deal damage to it.
+* **Land**: A place where Enemies can gather.
+* **Tower**: A defense, built by you, to attack Enemies
+* **Lair**: The place from which Enemies are sent by Frankie
 
-Your program will be managing Enemy movement as they pass through the Lands. It will also be managing the use of Towers against the Enemies and any damage the Castle receives.
-
-Note: If this assignment appears daunting, fear not! The Queen's chosen human (Marc in lectures) will be demonstrating many of the techniques necessary to begin your tasks. Her loyal subjects (the Tutors) will also be teaching some of the techniques in detail in Labs. During Week 8, a great deal of the course will be dedicated to helping you get started with this assignment.
-
-### The Realm
-The realm is a struct that contains all of the objects that will be used in this assignment. Those are: Lands, The Lair, The Castle, Towers and Enemies. Your job is to manage the Realm, and everything it contains.
-
-The Realm struct has a pointer to the Castle, whence Queen Chicken and her Loyal subjects look down upon their kingdom. It also has a pointer to the lair, from which Frankie the Fox sends his feindish Enemies. Every location in the Realm lies on a linked list that starts at The Castle, and goes down to The Lair. Locations can have one of four types:
- - Castle: The Castle, which is always the first node in the linked list. If the Enemies can reach The Castle, they will deal damage to it.
- - Land: A place where Enemies can gather.
- - Tower: A defense, built by you, to attack Enemies
- - Lair: The place from which Enemies are sent by Frankie
-
-Your code should ensure that at the start of the program, the Castle points to the Lair, and the Lair points to NULL. Your code should then ensure that the Castle is always connected (through other locations) to the Lair; and that the Lair points to NULL.
-
-To ensure this is true, you will never be given a test case where you are asked to put a tower after the Lair. (More details on adding towers later)
-
-As an additional restriction to make the assignment's rules simpler, there will never be two locations with the same name. 
+We assume we will never put a Tower after the Lair, and there will never be two locations with the same name. We must ensure that the Castle points to the Lair (initially) and remains connected through other locations, and that the Lair points to NULL.
 
 ### Enemies
-In these dark times, the realm is under attack. Fiendish Enemies regularly appear at their Lair and make their way, one location at a time, towards The Castle.
+Enemies regularly appear at their Lair and make their way, one location at a time, towards The Castle. An Enemy is represented by a struct recording their ```name```, ```maximum health```, and ```current health``` (as integers). They are also set up so Enemies can be joined together in a linked list. Enemies will always be at a location, which is represented by a linked list of Enemies at every location in The Realm. Linked lists of Enemies are always listed in alphabetical order.
 
-An Enemy is represented by a struct which records their name, their maximum health and their current health (as integers). These structs should also be set up so that the Enemies can be joined together in a linked list.
-
-Enemies will always be at a location, which is represented by a linked list of Enemies at every location in The Realm. Linked lists of Enemies are always listed in alphabetical order.
-
-An Enemy dies when it has zero or less health. It then is removed from the linked list that contained it and its memory is freed.
-
-There will never be two enemies in the realm with the same name.
+An Enemy dies when it has zero or less health. It then is removed from the linked list that contained it and its memory is freed. There will never be two enemies in the realm with the same name.
 
 ### Towers
 As mentioned before, locations in the realm can be Towers. Towers are able to reduce the HP of any Enemy at their Location. They can only be used a fixed number of times. When they run out of uses, they convert back into lands.
 
 Towers have two important properties:
- - Power: How much an Enemy's HP is reduced when the Tower attacks. This is a whole number, greater than zero.
- - Uses: A count of how many times a Tower can be used before it reverts to being a land. This is a whole number, greater than zero.
+* Power: How much an Enemy's HP is reduced when the Tower attacks. This is a whole number, greater than zero.
+* Uses: A count of how many times a Tower can be used before it reverts to being a land. This is a whole number, greater than zero.
 
 ### The Castle
-t the start of the list is The Castle. Enemies that manage to reach The Castle will deal damage to it; and if they move beyond the castle they are removed from the realm.
-
-The Castle starts off with STARTING_CASTLE_HP health. If an Enemy damages The Castle, it causes The Castle's health to decrease by that Enemy's remaining health.
+At the start of the list is The Castle. Enemies that manage to reach The Castle will deal damage to it; and if they move beyond the castle they are removed from the realm. The Castle starts off with ```STARTING_CASTLE_HP``` health. If an Enemy damages The Castle, it causes The Castle's health to decrease by that Enemy's remaining health.
 
 ```
 Note: Nothing special should happen when the castle goes below 0 HP. It can go negative if enough damage is dealt to it.
@@ -57,9 +37,9 @@ Note: Nothing special should happen when the castle goes below 0 HP. It can go n
 When the game starts, two locations are automatically created - the Castle and the Lair. You will then be given a list of locations on standard input, one per line. The order of the locations as standard input is the same order they will have starting from Castle and proceeding to Lair. These locations will be strings that do not contain any spaces, dashes or square brackets. When the list of locations is complete, an empty line will be input.
 
 After this, a prompt will appear. You will type in commands to indicate changes to the state of the Realm. These commands will all start with a character as the command, then a space, then possibly some additional information about the command. There are three special commands, which are already implemented in the Starter Code provided. They consist of:
- - ?: Print a list of all possible commands.
- - q: Quit the program.
- - /: Do nothing, this line is treated as a comment.
+* ```?```: Print a list of all possible commands.
+* ```q```: Quit the program.
+* ```/```: Do nothing, this line is treated as a comment.
  
  
 ## Your Task: Implementation
@@ -417,35 +397,4 @@ Test whether this new_enemy follows the spec: Follows Spec.
 Test whether this new_tower follows the spec: Follows Spec.
 Test whether this apply_damage follows the spec: Does Not Follow Spec.
 Test whether this apply_buff follows the spec: Follows Spec.
-```
-
-#### Capture
-This term, we have given you two extra files -- capture.c and capture.h. These files define the CAPTURE macro. Macros are not covered in this course and as a result, you do not need to understand these files.
-
-You can use them to capture what a function prints and put it into a string. This is useful if you combine it with the print_realm function, since you can then test the realm is as you expect.
-
-The header of capture.h describes how to use it.
-```
-// This file contains the `CAPTURE()` macro. To use this macro,
-// you should define a large, empty string. Lets say your string is:
-//   char str[MAX_LENGTH];
-// Then you can do the following:
-//   CAPTURE(my_function(), str, MAX_LENGTH)
-// Which will put the output of `my_function()` into str.
-```
-
-### Autotests
-As usual autotest is available with some simple tests - but your own tests in test_realm may be more useful at pinpointing exactly which functions are and aren't working.
-```sh
-$ 1511 autotest castle_defense
-```
-If you wish to use autotest to view only a specific stage of the assignment, you can use autotest-stage. The following example shows how to autotest stage 1 but you can replace the stage number with any stage you would like to test.
-```sh
-$ 1511 autotest-stage 01 castle_defense
-```
-
-### Reference Implementation
-If you have questions about what behaviour your program should exhibit, we have provided a sample solution for you to use.
-```sh
-$ 1511 castle_defense
 ```
